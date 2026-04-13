@@ -37,21 +37,22 @@
   .hint-box { margin-top: 12px; padding: 10px 14px; border-radius: 8px; font-size: 13px; font-family: 'DM Mono', monospace; line-height: 1.6; display: none; }
   .hint-box.correct { background: var(--correct-dim); color: var(--correct); border: 1px solid rgba(77,219,175,0.25); }
   .hint-box.wrong { background: var(--wrong-dim); color: var(--wrong); border: 1px solid rgba(255,107,107,0.25); }
-  .next-btn { width: 100%; padding: 13px; border-radius: var(--radius); border: 1px solid var(--accent); background: transparent; color: var(--accent); font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.05em; cursor: pointer; margin-top: 1rem; display: none; transition: background 0.15s, color 0.15s; }
+  .next-btn { width: 100%; padding: 13px; border-radius: var(--radius); border: 1px solid var(--accent); background: transparent; color: var(--accent); font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; margin-top: 1rem; display: none; transition: background 0.15s, color 0.15s; }
   .next-btn:hover { background: var(--accent); color: var(--bg); }
   .result-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.5rem; text-align: center; }
   .result-emoji { font-size: 52px; margin-bottom: 1rem; line-height: 1; }
   .result-title { font-size: 26px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-  .result-score { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--accent); margin-bottom: 2rem; }
+  .result-score { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--accent); margin-bottom: 1rem; }
+  .result-desc { font-size: 14px; color: var(--muted); font-family: 'DM Mono', monospace; line-height: 1.7; max-width: 440px; margin: 0 auto 1.5rem; }
   .result-steps { border-top: 1px solid var(--border); padding-top: 1.5rem; display: flex; flex-direction: column; gap: 12px; text-align: left; }
   .result-step { display: flex; gap: 12px; align-items: flex-start; }
   .step-num { color: var(--accent); min-width: 18px; font-size: 13px; font-family: 'DM Mono', monospace; flex-shrink: 0; }
   .step-text { color: var(--text); font-size: 13px; font-family: 'DM Mono', monospace; line-height: 1.5; }
   .result-smile { display: flex; gap: 12px; align-items: flex-start; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px; }
   .btn-row { display: flex; gap: 10px; margin-top: 1.5rem; justify-content: center; flex-wrap: wrap; }
-  .btn-ghost { padding: 10px 22px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+  .btn-ghost { padding: 10px 22px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; }
   .btn-ghost:hover { border-color: #555; color: var(--text); }
-  .btn-accent { padding: 10px 22px; border-radius: 8px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; transition: background 0.15s, color 0.15s; }
+  .btn-accent { padding: 10px 22px; border-radius: 8px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; }
   .btn-accent:hover { background: var(--accent); color: var(--bg); }
   @media (max-width: 480px) { .q-card { padding: 1.25rem; } h1 { font-size: 1.5rem; } }
 </style>
@@ -87,11 +88,11 @@ const questions = [
 ];
 
 const levels = [
-  { min:0, max:7, emoji:"🪨", title:"HR Classic" },
-  { min:8, max:14, emoji:"☕", title:"Saved for Later HR" },
-  { min:15, max:20, emoji:"🧩", title:"Prompt Collector HR" },
-  { min:21, max:26, emoji:"🤖", title:"Accidental Automation HR" },
-  { min:27, max:30, emoji:"🚀", title:"HR Engineer" }
+  { min:0, max:7, emoji:"🪨", title:"Stone Age HR", desc:"You use AI like Google. Still copy-paste everything. Occasionally say \"AI is overrated.\" Uses AI to translate emails. That's it." },
+  { min:8, max:14, emoji:"☕", title:"Saved for Later HR", desc:"You read AI posts. You save everything. You will definitely try it. Soon. Probably. The folder is called \"AI stuff\"." },
+  { min:15, max:20, emoji:"🧩", title:"Prompt Collector HR", desc:"You have prompts. You tweak prompts. You sometimes scare colleagues with words like \"context\". One webhook away from the next level." },
+  { min:21, max:26, emoji:"🤖", title:"Accidental Automation HR", desc:"You built something once. It worked. Now everyone thinks you're the AI person. You've stopped correcting them." },
+  { min:27, max:30, emoji:"🚀", title:"HR Engineer", desc:"Go build a startup. HR is just one of your modules now." }
 ];
 
 let current = 0, score = 0, answered = new Array(10).fill(null);
@@ -146,10 +147,10 @@ function showResult() {
       <div class="result-emoji">${lv.emoji}</div>
       <div class="result-title">${lv.title}</div>
       <div class="result-score">${score} / 30 pts</div>
+      <div class="result-desc">${lv.desc}</div>
       <div class="result-steps">
         <div class="result-step"><span class="step-num">1.</span><span class="step-text">Go back to the LinkedIn post</span></div>
         <div class="result-step"><span class="step-num">2.</span><span class="step-text">Drop your score in the comments 👇</span></div>
-        <div class="result-step"><span class="step-num">3.</span><span class="step-text">Full level breakdown is there too</span></div>
         <div class="result-smile"><span class="step-num">→</span><span class="step-text">Did you smile? Like the post ↗</span></div>
       </div>
       <div class="btn-row">
