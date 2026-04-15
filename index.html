@@ -4,21 +4,37 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Maturity Test for HR</title>
+<meta property="og:title" content="AI Maturity Test for HR">
+<meta property="og:description" content="How deep are you in AI? 10 practical questions. Find out your level.">
+<meta property="og:url" content="https://hr-ai-quiz-2027.vercel.app">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #222; --border: #2e2e2e;
-    --text: #f0f0f0; --muted: #888; --accent: #c8f04d;
-    --correct: #4ddbaf; --correct-dim: rgba(77,219,175,0.12);
-    --wrong: #ff6b6b; --wrong-dim: rgba(255,107,107,0.12); --radius: 10px;
+    --text: #f0f0f0; --muted: #aaa; --accent: #c8f04d;
+    --selected: #4ddbaf; --selected-dim: rgba(77,219,175,0.12);
+    --radius: 10px;
   }
   body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem 4rem; }
   .container { width: 100%; max-width: 600px; }
-  .header { margin-bottom: 2.5rem; padding-top: 1rem; }
-  .header-tag { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
-  h1 { font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 600; line-height: 1.2; color: var(--text); margin-bottom: 8px; }
-  .header-sub { font-size: 14px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  /* INTRO */
+  .intro { padding-top: 1rem; }
+  .author-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; }
+  .author-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .author-link { display: inline-block; margin-top: 6px; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent); text-decoration: none; }
+  .author-link:hover { text-decoration: underline; }
+  .author-desc { font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; line-height: 1.7; margin-top: 10px; }
+  .intro-tag { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; color: var(--text); letter-spacing: 0.02em; margin-bottom: 10px; }
+  .intro h1 { font-size: clamp(1.3rem, 4vw, 1.7rem); font-weight: 500; line-height: 1.3; color: var(--muted); margin-bottom: 10px; }
+  .intro-sub { font-size: 14px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 2rem; line-height: 1.6; }
+  .start-btn { display: block; width: 100%; padding: 16px; border-radius: var(--radius); border: 1px solid var(--accent); background: transparent; color: var(--accent); font-family: 'DM Mono', monospace; font-size: 14px; letter-spacing: 0.05em; cursor: pointer; text-align: center; transition: background 0.15s, color 0.15s; }
+  .start-btn:hover { background: var(--accent); color: var(--bg); }
+
+  /* QUIZ */
+  .quiz-header { margin-bottom: 2rem; padding-top: 1rem; }
+  .quiz-tag { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
   .progress-wrap { margin-bottom: 2rem; }
   .progress-meta { display: flex; justify-content: space-between; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
   .progress-track { height: 2px; background: var(--border); border-radius: 99px; overflow: hidden; }
@@ -29,147 +45,218 @@
   .opts { display: flex; flex-direction: column; gap: 8px; }
   .opt { display: flex; align-items: flex-start; gap: 12px; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; font-size: 14px; color: var(--text); background: var(--surface2); transition: border-color 0.15s, background 0.15s; line-height: 1.4; text-align: left; }
   .opt:hover { border-color: #444; background: #2a2a2a; }
+  .opt.selected { border-color: var(--selected); background: var(--selected-dim); }
+  .opt.selected .opt-key { color: var(--selected); }
   .opt-key { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); min-width: 16px; margin-top: 1px; flex-shrink: 0; }
-  .opt.sel-correct { border-color: var(--correct); background: var(--correct-dim); }
-  .opt.sel-correct .opt-key { color: var(--correct); }
-  .opt.sel-wrong { border-color: var(--wrong); background: var(--wrong-dim); }
-  .opt.sel-wrong .opt-key { color: var(--wrong); }
-  .hint-box { margin-top: 12px; padding: 10px 14px; border-radius: 8px; font-size: 13px; font-family: 'DM Mono', monospace; line-height: 1.6; display: none; }
-  .hint-box.correct { background: var(--correct-dim); color: var(--correct); border: 1px solid rgba(77,219,175,0.25); }
-  .hint-box.wrong { background: var(--wrong-dim); color: var(--wrong); border: 1px solid rgba(255,107,107,0.25); }
+  .hint-box { margin-top: 12px; padding: 10px 14px; border-radius: 8px; font-size: 13px; font-family: 'DM Mono', monospace; line-height: 1.6; display: none; background: rgba(200,240,77,0.08); color: var(--muted); border: 1px solid rgba(200,240,77,0.15); }
   .next-btn { width: 100%; padding: 13px; border-radius: var(--radius); border: 1px solid var(--accent); background: transparent; color: var(--accent); font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; margin-top: 1rem; display: none; transition: background 0.15s, color 0.15s; }
   .next-btn:hover { background: var(--accent); color: var(--bg); }
-  .result-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.5rem; text-align: center; }
-  .result-emoji { font-size: 52px; margin-bottom: 1rem; line-height: 1; }
-  .result-title { font-size: 26px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-  .result-score { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--accent); margin-bottom: 1rem; }
-  .result-desc { font-size: 14px; color: var(--muted); font-family: 'DM Mono', monospace; line-height: 1.7; max-width: 440px; margin: 0 auto 1.5rem; }
-  .result-steps { border-top: 1px solid var(--border); padding-top: 1.5rem; display: flex; flex-direction: column; gap: 12px; text-align: left; }
-  .result-step { display: flex; gap: 12px; align-items: flex-start; }
-  .step-num { color: var(--accent); min-width: 18px; font-size: 13px; font-family: 'DM Mono', monospace; flex-shrink: 0; }
-  .step-text { color: var(--text); font-size: 13px; font-family: 'DM Mono', monospace; line-height: 1.5; }
-  .result-smile { display: flex; gap: 12px; align-items: flex-start; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px; }
-  .btn-row { display: flex; gap: 10px; margin-top: 1.5rem; justify-content: center; flex-wrap: wrap; }
-  .btn-ghost { padding: 10px 22px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; }
+
+  /* RESULT */
+  .result-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.5rem; margin-bottom: 1rem; }
+  .result-emoji { font-size: 52px; margin-bottom: 1rem; line-height: 1; text-align: center; }
+  .result-status { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; text-align: center; }
+  .result-title { font-size: 24px; font-weight: 600; color: var(--text); margin-bottom: 6px; text-align: center; }
+  .result-score { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; text-align: center; }
+  .result-desc { font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 1.25rem; }
+  .result-meta { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.25rem; }
+  .result-meta-item { display: flex; gap: 10px; align-items: flex-start; }
+  .meta-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); min-width: 120px; flex-shrink: 0; padding-top: 2px; }
+  .meta-value { font-size: 13px; color: var(--text); line-height: 1.5; font-family: 'DM Mono', monospace; }
+  .share-hint { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 8px; display: none; }
+  .result-share-line { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; border-top: 1px solid var(--border); padding-top: 12px; margin-bottom: 12px; font-style: italic; }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-ghost { padding: 10px 22px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
   .btn-ghost:hover { border-color: #555; color: var(--text); }
-  .btn-accent { padding: 10px 22px; border-radius: 8px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; }
-  .btn-accent:hover { background: var(--accent); color: var(--bg); }
-  @media (max-width: 480px) { .q-card { padding: 1.25rem; } h1 { font-size: 1.5rem; } }
+  .btn-linkedin { padding: 10px 22px; border-radius: 8px; border: 1px solid #0a66c2; background: transparent; color: #0a66c2; font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; transition: background 0.15s, color 0.15s; }
+  .btn-linkedin:hover { background: #0a66c2; color: #fff; }
+  .post-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+  .post-card-title { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+  .post-card-text { font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; line-height: 1.7; }
+  .post-card-text a { color: var(--accent); text-decoration: none; }
+  .post-card-text a:hover { text-decoration: underline; }
+  .contact-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; }
+  .contact-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+  .contact-links { font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; line-height: 1.8; }
+  .contact-links a { color: var(--accent); text-decoration: none; }
+  .contact-links a:hover { text-decoration: underline; }
+  @media (max-width: 480px) { .q-card { padding: 1.25rem; } .meta-label { min-width: 100px; } }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <div class="header-tag">🧠 AI Maturity Test for HR</div>
-    <h1>What's your AI level?</h1>
-    <div class="header-sub">Answer honestly. The AI already knows.</div>
-  </div>
-  <div class="progress-wrap">
-    <div class="progress-meta">
-      <span id="prog-label">Question 1 of 10</span>
-      <span id="score-label"></span>
-    </div>
-    <div class="progress-track"><div class="progress-fill" id="progress" style="width:10%"></div></div>
-  </div>
-  <div id="q-container"></div>
-</div>
+<div class="container" id="app"></div>
 <script>
+const LINKEDIN_POST_URL = "YOUR_POST_URL_HERE";
+const QUIZ_URL = "https://hr-ai-quiz-2027.vercel.app";
+
 const questions = [
-  { text: "Have you heard about the RCJF rule?", opts: ["Yes, I use it", "I've heard it but not sure what it is", "Sounds familiar from LinkedIn", "Is this HR compliance?"], scores: [3,2,1,0], hint: "Role, Context, Job, Format — the backbone of any prompt that actually works." },
-  { text: "Have you configured custom instructions in your AI?", opts: ["Yes, multiple setups", "Yes, once", "I think so", "I just type \"improve this\""], scores: [3,2,1,0], hint: "Your name, role, tone, output format — saves 3 sentences in every single prompt." },
-  { text: "Do you have a paid AI subscription?", opts: ["Yes, more than one", "Yes", "Planning to", "Free version works… mostly"], scores: [3,2,1,0], hint: "The free tier runs out exactly when you need it most. Usually mid-offer letter." },
-  { text: "Context window is:", opts: ["Model memory limit", "Chat history", "Something technical", "The chat box"], scores: [3,2,1,0], hint: "200k tokens ≈ 150,000 words. After that, the AI forgets everything." },
-  { text: "Do you have GitHub?", opts: ["Yes, with something inside", "Yes, empty", "Registered once", "That's for developers"], scores: [3,2,1,0], hint: "Even if you don't write code — great for storing scripts and pretending you're an engineer." },
-  { text: "Railway / Vercel / Render — you:", opts: ["Host things there", "Watched tutorials", "Know the names", "Sounds like logistics"], scores: [3,2,1,0], hint: "That's where you put things you built with AI. Without this, your bot lives only on your laptop." },
-  { text: "Have you installed Cursor / AI IDE?", opts: ["Yes, using it", "Installed, scared", "Planning to", "I'm HR, why would I"], scores: [3,2,1,0], hint: "Cursor is VS Code with AI built in. You open it and immediately feel like a developer." },
-  { text: "Have you built anything with AI?", opts: ["Bot / assistant", "Automation", "Prompt library", "Just experiments"], scores: [3,2,1,0], hint: "Your first bot that sends a notification — you remember it forever." },
-  { text: "Your monthly AI spending looks like:", opts: ["Several subscriptions, I stopped counting", "ChatGPT + one more tool", "Just one paid tool", "Free plan + motivation"], scores: [3,2,1,0], hint: "Motivation is great. It doesn't have access to GPT-4." },
-  { text: "API key — this is:", opts: ["Something I already used", "I've seen it in tutorials", "Sounds technical but important", "No idea"], scores: [3,2,1,0], hint: "A password that connects your code to an AI model. Step one of everything." }
+  { text: "Have you heard of the RCJF rule?", opts: ["Yes, I use it", "Heard of it, but not sure what it is", "Sounds familiar", "Is this about HR compliance?"], scores: [3,2,1,0], hint: "Role + Context + Job + Format — the basic formula for a prompt that actually works." },
+  { text: "Have you set up custom instructions in your AI?", opts: ["Yes, several different setups", "Yes, once", "I think so", "I just type \"improve this\""], scores: [3,2,1,0], hint: "Set it up once — write less in every request." },
+  { text: "Do you have a paid AI subscription?", opts: ["Yes, more than one", "Yes", "Planning to", "The free version works… mostly"], scores: [3,2,1,0], hint: "The free tier runs out at exactly the wrong moment." },
+  { text: "A context window is:", opts: ["The model's memory limit", "Chat history", "Something technical", "The chat window"], scores: [3,2,1,0], hint: "When the limit runs out — the AI forgets the beginning of the conversation." },
+  { text: "Do you have GitHub?", opts: ["Yes, there's something in there", "Yes, empty", "Registered once", "That's for developers"], scores: [3,2,1,0], hint: "Great for storing scripts, bots, and \"what I built yesterday\"." },
+  { text: "Railway / Vercel / Render — you:", opts: ["Host projects there", "Watched tutorials", "Know the names", "Sounds like something from logistics"], scores: [3,2,1,0], hint: "These platforms keep your automations running while you and your laptop are resting." },
+  { text: "Have you installed Cursor / AI IDE?", opts: ["Yes, I use it", "Installed it, scared to open it", "Planning to", "I'm in HR, why would I"], scores: [3,2,1,0], hint: "A tool where AI helps you write code. The entry barrier is nearly zero." },
+  { text: "Have you built anything with AI?", opts: ["A bot / assistant", "An automation", "Just put together a prompt library so far", "Just a list of things I want to build"], scores: [3,2,1,0], hint: "Your first working automation changes how you see AI forever." },
+  { text: "Your monthly AI spending:", opts: ["Several subscriptions, I've lost count", "ChatGPT + one more tool", "One paid tool", "Free plan + motivation"], scores: [3,2,1,0], hint: "Motivation doesn't unlock paid models 🙂" },
+  { text: "An API key is:", opts: ["Something I've already used", "Seen it in tutorials", "Sounds technical but important", "No idea"], scores: [3,2,1,0], hint: "The first step to connecting AI to real workflows." }
 ];
 
 const levels = [
-  { min:0, max:7, emoji:"🪨", title:"Stone Age HR", desc:"You use AI like Google. Still copy-paste everything. Occasionally say \"AI is overrated.\" Uses AI to translate emails. That's it." },
-  { min:8, max:14, emoji:"☕", title:"Saved for Later HR", desc:"You read AI posts. You save everything. You will definitely try it. Soon. Probably. The folder is called \"AI stuff\"." },
-  { min:15, max:20, emoji:"🧩", title:"Prompt Collector HR", desc:"You have prompts. You tweak prompts. You sometimes scare colleagues with words like \"context\". One webhook away from the next level." },
-  { min:21, max:26, emoji:"🤖", title:"Accidental Automation HR", desc:"You built something once. It worked. Now everyone thinks you're the AI person. You've stopped correcting them." },
-  { min:27, max:30, emoji:"🚀", title:"HR Engineer", desc:"Go build a startup. HR is just one of your modules now." }
+  { min:0, max:7, emoji:"🪷", status:"AI Explorer", title:"The AI Humanist", desc:"You are the soul of the organization. While everyone else is arguing with chatbots, you are the one actually resolving team conflicts and managing turnover with human intuition that no algorithm can replicate. You use AI sparingly and thoughtfully, ensuring the Human in Human Resources stays front and center.", superpower:"High Emotional Intelligence (EQ).", next:"You're just 2–3 prompts away from your next level. Keep that human touch — it's the only thing AI can't copy!", share:"You believe the best HR tech is the one that serves people, not replaces them." },
+  { min:8, max:14, emoji:"☕", status:"Innovation Curator", title:"The AI Strategist", desc:"You're in the Strategic Research phase. Your \"AI stuff\" folder is basically a goldmine of future efficiency. You don't jump on every hype train immediately because you're a curator of quality. You are the sleeper agent for innovation — waiting for the perfect moment to deploy a tool that actually works.", superpower:"Strategic patience and a sharp eye for trends.", next:"Open that folder! One successful automation will turn you from a researcher into an office legend.", share:"You're building a long-term AI vision while everyone else is just playing with toys." },
+  { min:15, max:20, emoji:"🧩", status:"The Human-AI Translator", title:"The AI Prompt Architect", desc:"You speak both Human and Machine fluently. You've mastered the RCJF rule and probably have a favorite custom instruction that makes your AI sound like a witty assistant. You are the bridge between your team's needs and the power of the models. You're officially one webhook away from total office domination.", superpower:"Precision communication and clarity of thought.", next:"Connect one of your prompts to a real workflow — try a simple automation!", share:"Your colleagues already come to you asking: \"How do I make the bot do this?\"" },
+  { min:21, max:26, emoji:"🤖", status:"Tech-Forward HR Leader", title:"The AI Automation Ninja", desc:"You came for the productivity, but you stayed for the magic. You've built things that actually work, and now you're the go-to person for fixing broken processes. You're the one saving the company dozens of hours a week, and you've stopped pushing back because you're too busy scaling.", superpower:"Turning chaos into scalable, automated workflows.", next:"Start a Pilot AI Group — you're already doing the work of a Chief AI Officer.", share:"You've automated the boring stuff so you can finally focus on high-level strategy." },
+  { min:27, max:30, emoji:"🚀", status:"HR Architect (2030 Edition)", title:"The AI Visionary Engineer", desc:"Let's be honest: are you even still in HR, or are you a secret developer? You're deploying scripts, managing API keys, and probably teaching the IT department a thing or two. You aren't just using AI — you are redefining what People Operations looks like in the age of intelligence.", superpower:"Engineering the future of work.", next:"Launch that side project or internal tool. The industry is still catching up to where you were yesterday.", share:"You have more AI subscriptions than streaming services." }
 ];
 
-let current = 0, score = 0, answered = new Array(10).fill(null);
+let current = 0, score = 0, selectedIdx = null, shuffled = [];
+
 function getLevel(s) { return levels.find(l => s >= l.min && s <= l.max); }
 
-function render() {
+function shuffle(arr) {
+  const a = arr.map((v,i) => ({v, i, r: Math.random()}));
+  a.sort((x,y) => x.r - y.r);
+  return a;
+}
+
+function showIntro() {
+  document.getElementById('app').innerHTML = `
+    <div class="intro">
+      <div class="author-card">
+        <div class="author-name">Hi, I'm Lena — bringing AI into HR while keeping it human.</div>
+        <a class="author-link" href="https://www.linkedin.com/in/elenabondareva/" target="_blank">→ LinkedIn</a>
+        <div class="author-desc">I made this test to help HR professionals see how far they've come — and how much exciting and useful stuff AI still has to offer.<br><br>Enjoy 🙂</div>
+      </div>
+      <div class="intro-tag">🧠 AI Maturity Test for HR</div>
+      <h1>How deep are you in AI?</h1>
+      <div class="intro-sub">Questions are practical. Results are a little tongue-in-cheek.</div>
+      <button class="start-btn" onclick="startQuiz()">Start the test →</button>
+    </div>`;
+}
+
+function startQuiz() {
+  current = 0; score = 0; selectedIdx = null; shuffled = [];
+  renderQuiz();
+}
+
+function renderQuiz() {
   if (current >= questions.length) { showResult(); return; }
   const q = questions[current];
-  document.getElementById('progress').style.width = Math.max((current / questions.length * 100), 10) + '%';
-  document.getElementById('prog-label').textContent = `Question ${current + 1} of ${questions.length}`;
-  document.getElementById('score-label').textContent = score > 0 ? score + ' pts' : '';
+  const pct = Math.max((current / questions.length * 100), 5);
+  shuffled = shuffle(q.opts);
   const keys = ['A','B','C','D'];
-  const optsHtml = q.opts.map((o,i) => `<div class="opt" onclick="choose(${i})" id="opt-${i}"><span class="opt-key">${keys[i]}</span><span>${o}</span></div>`).join('');
-  document.getElementById('q-container').innerHTML = `
+  const optsHtml = shuffled.map((item, i) =>
+    `<div class="opt" onclick="choose(${i})" id="opt-${i}"><span class="opt-key">${keys[i]}</span><span>${item.v}</span></div>`
+  ).join('');
+  document.getElementById('app').innerHTML = `
+    <div class="quiz-header">
+      <div class="quiz-tag">🧠 AI Maturity Test for HR</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span>Question ${current + 1} of ${questions.length}</span>
+        <span id="score-label"></span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
     <div class="q-card">
       <div class="q-label">QUESTION ${current + 1}</div>
       <div class="q-text">${q.text}</div>
       <div class="opts">${optsHtml}</div>
       <div class="hint-box" id="hint"></div>
     </div>
-    <button class="next-btn" id="next-btn" onclick="next()">${current === questions.length - 1 ? 'See my result →' : 'Next →'}</button>`;
+    <button class="next-btn" id="next-btn" onclick="nextQ()">${current === questions.length - 1 ? 'See my result →' : 'Next →'}</button>`;
 }
 
 function choose(idx) {
-  if (answered[current] !== null) return;
+  if (document.getElementById('next-btn').style.display === 'block' && selectedIdx !== null) {
+    document.getElementById('opt-' + selectedIdx).className = 'opt';
+  }
+  selectedIdx = idx;
+  document.querySelectorAll('.opt').forEach(o => o.className = 'opt');
+  document.getElementById('opt-' + idx).className = 'opt selected';
   const q = questions[current];
-  const pts = q.scores[idx];
-  const best = Math.max(...q.scores);
-  const isCorrect = pts === best;
-  score += pts;
-  answered[current] = idx;
-  document.getElementById('opt-' + idx).className = 'opt ' + (isCorrect ? 'sel-correct' : 'sel-wrong');
-  if (!isCorrect) document.getElementById('opt-' + q.scores.indexOf(best)).className = 'opt sel-correct';
   const hint = document.getElementById('hint');
   hint.textContent = q.hint;
-  hint.className = 'hint-box ' + (isCorrect ? 'correct' : 'wrong');
   hint.style.display = 'block';
   document.getElementById('next-btn').style.display = 'block';
-  document.getElementById('score-label').textContent = score + ' pts';
 }
 
-function next() { current++; render(); }
+function nextQ() {
+  if (selectedIdx === null) return;
+  const q = questions[current];
+  const originalIdx = shuffled[selectedIdx].i;
+  score += q.scores[originalIdx];
+  current++;
+  selectedIdx = null;
+  renderQuiz();
+}
 
 function showResult() {
-  document.getElementById('progress').style.width = '100%';
-  document.getElementById('prog-label').textContent = 'Done!';
-  document.getElementById('score-label').textContent = score + ' / 30';
   const lv = getLevel(score);
-  const titleEsc = lv.title.replace(/'/g, "\\'");
-  document.getElementById('q-container').innerHTML = `
+  const shareText = `I just took the HR AI Maturity Test and got "${lv.title}" (${score}/30) ${lv.emoji}\n\nTake it yourself → ${QUIZ_URL}`;
+
+  document.getElementById('app').innerHTML = `
     <div class="result-card">
       <div class="result-emoji">${lv.emoji}</div>
+      <div class="result-status">${lv.status}</div>
       <div class="result-title">${lv.title}</div>
       <div class="result-score">${score} / 30 pts</div>
       <div class="result-desc">${lv.desc}</div>
-      <div class="result-steps">
-        <div class="result-step"><span class="step-num">1.</span><span class="step-text">Go back to the LinkedIn post</span></div>
-        <div class="result-step"><span class="step-num">2.</span><span class="step-text">Drop your score in the comments 👇</span></div>
-        <div class="result-smile"><span class="step-num">→</span><span class="step-text">Did you smile? Like the post ↗</span></div>
+      <div class="result-meta">
+        <div class="result-meta-item">
+          <span class="meta-label">Your AI superpower:</span>
+          <span class="meta-value">${lv.superpower}</span>
+        </div>
+        <div class="result-meta-item">
+          <span class="meta-label">Your next move:</span>
+          <span class="meta-value">${lv.next}</span>
+        </div>
+        <div class="result-meta-item">
+          <span class="meta-label">Share this if:</span>
+          <span class="meta-value">${lv.share}</span>
+        </div>
       </div>
+      <div class="result-share-line">Liked your result? Share it — your network might be curious too.</div>
       <div class="btn-row">
-        <button class="btn-ghost" onclick="restart()">Try again</button>
-        <button class="btn-accent" id="copy-btn" onclick="copyScore('${titleEsc}', ${score})">Copy score</button>
+        <button class="btn-linkedin" id="share-btn" onclick="shareLinkedIn()">Share on LinkedIn</button>
+        <button class="btn-ghost" onclick="showIntro()">Try again</button>
+      </div>
+      <div class="share-hint" id="share-hint">✓ Result copied — paste it in the LinkedIn post (Cmd+V / Ctrl+V)</div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-card-title">came here from a linkedin post?</div>
+      <div class="post-card-text">If you enjoyed the test — go back and like it. Even better — share it 😄<br><br>
+      ${LINKEDIN_POST_URL !== "YOUR_POST_URL_HERE" ? `<a href="${LINKEDIN_POST_URL}" target="_blank">→ Open the original post</a>` : 'Link to the original post coming soon.'}
+      </div>
+    </div>
+
+    <div class="contact-card">
+      <div class="contact-title">If your HR team needs an AI upgrade — let's talk.</div>
+      <div class="contact-links">
+        I'm open to opportunities.<br>
+        <a href="https://www.linkedin.com/in/elenabondareva/" target="_blank">LinkedIn</a> · <a href="mailto:elenawbond@gmail.com">elenawbond@gmail.com</a>
       </div>
     </div>`;
+
+  window._shareText = shareText;
 }
 
-function copyScore(title, pts) {
-  navigator.clipboard.writeText(`I got "${title}" — ${pts}/30 on the HR AI Maturity Test 🤖`).then(() => {
-    const btn = document.getElementById('copy-btn');
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy score', 2000);
+function shareLinkedIn() {
+  navigator.clipboard.writeText(window._shareText).then(() => {
+    const hint = document.getElementById('share-hint');
+    hint.style.display = 'block';
+    setTimeout(() => {
+      window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(QUIZ_URL), '_blank');
+    }, 600);
+  }).catch(() => {
+    window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(QUIZ_URL), '_blank');
   });
 }
 
-function restart() { current = 0; score = 0; answered = new Array(10).fill(null); render(); }
-render();
+showIntro();
 </script>
 </body>
 </html>
